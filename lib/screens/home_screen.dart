@@ -11,6 +11,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int totalSeconds = 1500; //25분을 초로 환산하면 1500초다
   late Timer timer;
+  bool isRunning = false;
+
   void onTick(Timer timer) {
     setState(() {
       totalSeconds = totalSeconds - 1;
@@ -19,7 +21,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void onStartPressed() {
     timer = Timer.periodic(const Duration(seconds: 1), onTick);
+
+    setState(() {
+      isRunning = true;
+    });
   }
+
+  void onPausePressed() {
+    timer.cancel();
+    setState(() {
+      isRunning = false;
+    });
+  }
+
   //그럴 때 매 1초마다 여기있는 함수가 실행된다
 
   @override
@@ -45,9 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Center(
               child: IconButton(
                 iconSize: 120,
-                onPressed: onStartPressed,
                 color: Theme.of(context).cardColor,
-                icon: const Icon(Icons.play_circle_outline),
+                onPressed: isRunning ? onPausePressed : onStartPressed,
+                icon: Icon(isRunning
+                    ? Icons.pause_circle_outline
+                    : Icons.play_circle_outline),
               ),
             ),
           ),
