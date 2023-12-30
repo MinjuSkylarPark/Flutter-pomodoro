@@ -3,25 +3,36 @@ import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int totalSeconds = 1500; //25분을 초로 환산하면 1500초다
-  late Timer timer;
+  static const twentyFiveMins = 10;
+  //25분을 임시로 10초로 바꿔놓는다
+  //이건 횟수증가확인용으로 테스트 종료후 1500초로 다시 수정한다
+  int totalSeconds = twentyFiveMins; //25분을 초로 환산하면 1500초다
   bool isRunning = false;
+  int totalPomodoros = 0; //앱 화면 하단에 앱 최종 실행횟수를 출력시킨다
+  late Timer timer;
 
   void onTick(Timer timer) {
-    setState(() {
-      totalSeconds = totalSeconds - 1;
-    });
+    if (totalSeconds == 0) {
+      setState(() {
+        totalPomodoros = totalPomodoros + 1;
+        isRunning = false;
+        totalSeconds = 1500;
+      });
+      timer.cancel();
+    } else {
+      setState(() {
+        totalSeconds = totalSeconds - 1;
+      });
+    }
   }
 
   void onStartPressed() {
     timer = Timer.periodic(const Duration(seconds: 1), onTick);
-
     setState(() {
       isRunning = true;
     });
@@ -33,8 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
       isRunning = false;
     });
   }
-
-  //그럴 때 매 1초마다 여기있는 함수가 실행된다
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   .color),
                         ),
                         Text(
-                          '0',
+                          '$totalPomodoros',
                           style: TextStyle(
                               fontSize: 58,
                               fontWeight: FontWeight.w600,
