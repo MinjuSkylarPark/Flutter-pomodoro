@@ -9,11 +9,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   static const twentyFiveMins = 10;
-  //25분을 임시로 10초로 바꿔놓는다
-  //이건 횟수증가확인용으로 테스트 종료후 1500초로 다시 수정한다
-  int totalSeconds = twentyFiveMins; //25분을 초로 환산하면 1500초다
+  int totalSeconds = twentyFiveMins;
   bool isRunning = false;
-  int totalPomodoros = 0; //앱 화면 하단에 앱 최종 실행횟수를 출력시킨다
+  int totalPomodoros = 0;
   late Timer timer;
 
   void onTick(Timer timer) {
@@ -45,6 +43,12 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  String format(int seconds) {
+    var duration = Duration(seconds: seconds);
+    // print(duration.toString().split(".").first.substring(2, 7));
+    return (duration.toString().split(".").first.substring(2, 7));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               alignment: Alignment.bottomCenter,
               child: Text(
-                '$totalSeconds',
+                // '$totalSeconds',
+                format(totalSeconds),
                 style: TextStyle(
                     color: Theme.of(context).cardColor,
                     fontSize: 89,
