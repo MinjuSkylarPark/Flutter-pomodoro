@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static const twentyFiveMins = 10;
+  static const twentyFiveMins = 1500;
   int totalSeconds = twentyFiveMins;
   bool isRunning = false;
   int totalPomodoros = 0;
@@ -19,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         totalPomodoros = totalPomodoros + 1;
         isRunning = false;
-        totalSeconds = 1500;
+        totalSeconds = twentyFiveMins;
       });
       timer.cancel();
     } else {
@@ -31,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void onStartPressed() {
     timer = Timer.periodic(const Duration(seconds: 1), onTick);
+
     setState(() {
       isRunning = true;
     });
@@ -43,9 +45,17 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void onStopPressed() {
+    timer.cancel();
+    setState(() {
+      totalSeconds = twentyFiveMins;
+      totalPomodoros = 0;
+      isRunning = false;
+    });
+  }
+
   String format(int seconds) {
     var duration = Duration(seconds: seconds);
-    // print(duration.toString().split(".").first.substring(2, 7));
     return (duration.toString().split(".").first.substring(2, 7));
   }
 
@@ -69,16 +79,24 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Flexible(
-            flex: 3,
-            child: Center(
-              child: IconButton(
-                iconSize: 120,
-                color: Theme.of(context).cardColor,
-                onPressed: isRunning ? onPausePressed : onStartPressed,
-                icon: Icon(isRunning
-                    ? Icons.pause_circle_outline
-                    : Icons.play_circle_outline),
-              ),
+            flex: 1,
+            child: Column(
+              children: [
+                IconButton(
+                  iconSize: 120,
+                  color: Theme.of(context).cardColor,
+                  onPressed: isRunning ? onPausePressed : onStartPressed,
+                  icon: Icon(isRunning
+                      ? Icons.pause_circle_outline
+                      : Icons.play_circle_outline),
+                ),
+                IconButton(
+                  onPressed: onStopPressed,
+                  icon: const Icon(Icons.restart_alt),
+                  iconSize: 90,
+                  color: Theme.of(context).cardColor,
+                )
+              ],
             ),
           ),
           Flexible(
